@@ -1,21 +1,24 @@
 package main
 
 import (
-	"log"
+	"flag"
 	"os"
 	"os/signal"
 	"syscall"
+	"time"
 
 	"github.com/BarTar213/go-template/api"
 	"github.com/BarTar213/go-template/config"
 	"github.com/gin-gonic/gin"
+	log "github.com/sirupsen/logrus"
 )
 
 func main() {
-	conf := config.NewConfig("app_name.yml")
-	logger := log.New(os.Stdout, "", log.LstdFlags)
+	cfgPath := flag.String("cfgPath", "config.yml", "path to config file")
+	flag.Parse()
 
-	logger.Printf("%+v\n", conf)
+	conf := config.NewConfig(*cfgPath)
+	log.Infof("%+v", conf)
 
 	if conf.Api.Release {
 		gin.SetMode(gin.ReleaseMode)
@@ -23,15 +26,15 @@ func main() {
 
 	a := api.NewApi(
 		api.WithConfig(conf),
-		api.WithLogger(logger),
 	)
 
 	go a.Run()
-	logger.Print("started app")
+	log.Info("started app")
 
 	shutDownSignal := make(chan os.Signal)
 	signal.Notify(shutDownSignal, syscall.SIGINT, syscall.SIGTERM)
 
 	<-shutDownSignal
-	logger.Print("exited from app")
+	a.Shutdown(5 * time.Second)
+	log.Info("exited from app")
 }
