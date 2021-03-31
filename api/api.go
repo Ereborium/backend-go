@@ -17,18 +17,11 @@ type Api struct {
 	Router chi.Router
 	server *http.Server
 	Config *config.Config
-	Logger *log.Logger
 }
 
 func WithConfig(conf *config.Config) func(a *Api) {
 	return func(a *Api) {
 		a.Config = conf
-	}
-}
-
-func WithLogger(logger *log.Logger) func(a *Api) {
-	return func(a *Api) {
-		a.Logger = logger
 	}
 }
 

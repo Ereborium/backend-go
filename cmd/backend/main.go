@@ -5,24 +5,24 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
-	"time"
 
 	"github.com/BarTar213/go-template/api"
 	"github.com/BarTar213/go-template/config"
-	"github.com/gin-gonic/gin"
 	log "github.com/sirupsen/logrus"
 )
 
 func main() {
-	cfgPath := flag.String("cfgPath", "config.yml", "path to config file")
+	cfgPath := flag.String("cfg", "config.yml", "path to config file")
 	flag.Parse()
 
-	conf := config.NewConfig(*cfgPath)
-	log.Infof("%+v", conf)
-
-	if conf.Api.Release {
-		gin.SetMode(gin.ReleaseMode)
+	conf, err := config.New(*cfgPath)
+	if err != nil {
+		log.Error(err)
+		return
 	}
+
+	log.WithField("app", "backend-go")
+	log.Infof("%+v", conf)
 
 	a := api.NewApi(
 		api.WithConfig(conf),
@@ -35,6 +35,6 @@ func main() {
 	signal.Notify(shutDownSignal, syscall.SIGINT, syscall.SIGTERM)
 
 	<-shutDownSignal
-	a.Shutdown(5 * time.Second)
+	a.Shutdown(conf.Api.Timeout)
 	log.Info("exited from app")
 }

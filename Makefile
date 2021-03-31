@@ -1,16 +1,20 @@
-.PHONY: install test binary cover cover-total
+.PHONY: install test binary cover cover-html cover-total
 
 binary:
-	@go build -o app_name ./cmd/app_name
+	@go build -o backend ./cmd/backend
 
 install:
-	go install ./...
+	@go install ./...
 
 test:
 	@go test ./... -cover
 
 cover:
 	@go test -coverprofile=cover.out ./...
+
+cover-html:
+	@go test -coverprofile=cover.out ./...
+	@go tool cover -html=cover.out
 
 cover-total:
 	@go test -coverprofile=cover.out ./...
