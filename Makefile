@@ -1,7 +1,7 @@
 .PHONY: install test binary cover cover-html cover-total
 
 binary:
-	@go build -o backend ./cmd/backend
+	@go build ./cmd/backend
 
 install:
 	@go install ./...
