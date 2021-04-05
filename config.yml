@@ -2,3 +2,9 @@ api:
   port: ":8080"
   timeout: 5s
   release: false
+postgres:
+  address: "localhost:5432"
+  username: "postgres"
+  password: "admin"
+  database: "ereboriumgo"
+  dialTimeout: 5s

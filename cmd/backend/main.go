@@ -15,17 +15,17 @@ func main() {
 	cfgPath := flag.String("cfg", "config.yml", "path to config file")
 	flag.Parse()
 
-	conf, err := config.New(*cfgPath)
+	cfg, err := config.New(*cfgPath)
 	if err != nil {
 		log.Error(err)
 		return
 	}
 
 	log.WithField("app", "backend-go")
-	log.Infof("%+v", conf)
+	log.Infof("%+v", cfg)
 
 	a := api.NewApi(
-		api.WithConfig(conf),
+		api.WithConfig(cfg),
 	)
 
 	go a.Run()
@@ -35,6 +35,6 @@ func main() {
 	signal.Notify(shutDownSignal, syscall.SIGINT, syscall.SIGTERM)
 
 	<-shutDownSignal
-	a.Shutdown(conf.Api.Timeout)
+	a.Shutdown(cfg.Api.Timeout)
 	log.Info("exited from app")
 }
