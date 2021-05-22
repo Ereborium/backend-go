@@ -1,9 +1,9 @@
 package config
 
 import (
-	"log"
 	"time"
 
+	"github.com/pkg/errors"
 	"github.com/spf13/viper"
 )
 
@@ -14,23 +14,20 @@ type Config struct {
 type Api struct {
 	Port    string
 	Timeout time.Duration
-	Release bool
 }
 
-func NewConfig(fileName string) *Config {
+func New(fileName string) (*Config, error) {
 	viper.SetConfigFile(fileName)
 	viper.SetConfigType("yaml")
 
-	var config Config
-
 	if err := viper.ReadInConfig(); err != nil {
-		log.Fatalf("Error reading config file, %s", err)
+		return nil, errors.WithMessage(err, "read in config")
 	}
 
-	err := viper.Unmarshal(&config)
-	if err != nil {
-		log.Fatalf("unable to decode into struct, %v", err)
+	cfg := &Config{}
+	if err := viper.Unmarshal(cfg); err != nil {
+		return nil, errors.WithMessage(err, "viper unmarshal")
 	}
 
-	return &config
+	return cfg, nil
 }

@@ -1,1 +1,1 @@
-# go-template
+# Ereborium backend go

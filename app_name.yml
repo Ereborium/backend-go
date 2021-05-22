@@ -1,4 +1,0 @@
-api:
-  port: ":8080"
-  timeout: 5s
-  release: false
