@@ -19,3 +19,6 @@ cover-html:
 cover-total:
 	@go test -coverprofile=cover.out ./...
 	@go tool cover -func cover.out | grep total:
+
+lint:
+	golangci-lint run ./...
