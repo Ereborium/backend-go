@@ -28,10 +28,15 @@ func main() {
 		api.WithConfig(cfg),
 	)
 
-	go a.Run()
+	go func() {
+		err = a.Run()
+		if err != nil {
+			log.Fatal(err)
+		}
+	}()
 	log.Info("started app")
 
-	shutDownSignal := make(chan os.Signal)
+	shutDownSignal := make(chan os.Signal, 1)
 	signal.Notify(shutDownSignal, syscall.SIGINT, syscall.SIGTERM)
 
 	<-shutDownSignal
